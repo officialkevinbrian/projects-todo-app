@@ -11,24 +11,39 @@ class TodoController extends Controller
 
     public function index()
     {
-        
-        return view('todo.index')->with('name','Kevin Brian');
+
+        $result = Todo::get();
+
+        // dump($result);
+
+        $projectsCategory = $result;
+
+        return view('todo.index')->with('name', 'Kevin Brian')->with('projectsCategory', $projectsCategory);
     }
 
     /**
      * Funcao que guarda na DB
      */
-    public function store()
+    public function store(Request $request)
     {
 
+
         //insert some data in Todo
-        Todo::create(['title' => "Estudar Laravel", "status" => "PENDING"]);
 
-        //we use ::all static
-        $getAllTodos = Todo::all();
+        $data = $request->all();
+        $result;
 
-        //we debug here to get all todos
-        // dump($getAllTodos);
-        return view('todo.new')->with('name','Kevin Brian');
+        if($data){
+            $result = Todo::create(["title"=>$data['title'], "status" => "PENDING"]);
+        }
+
+        if(isset($result)){
+            return redirect('/todos');
+            
+        }
+        
+        return view('todo.new');
+
+        
     }
 }
